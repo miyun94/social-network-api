@@ -16,8 +16,13 @@ app.get('/populate', ({params}, res)=>{
         path: 'thoughts'
     })
     .then(dbUserdata => {
+        if(!dbUserdata){
+            res.status(404).json({message: "No user found with this Id"}); 
+            return; 
+        }
         res.json(dbUserdata)
-    });
+    })
+    .catch(err=> res.status(400).json(err)); 
 }); 
 
 //post a new user 
