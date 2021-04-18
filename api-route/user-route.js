@@ -29,6 +29,7 @@ router.get('/:id', ({params}, res)=>{
 router.post('/submit', ({ body }, res) => {
     User.create(body)
     .then(dbUserdata => {
+        console.log(dbUserdata)
         res.json(dbUserdata); 
     })
     .catch(err => {
