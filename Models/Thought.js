@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose'); 
 const dateFormat = require('../utils/dateFormat'); 
+const reactionSchema = require('./Reaction')
 
 //create scehma 
 const ThoughtSchema = new Schema(
@@ -7,7 +8,7 @@ const ThoughtSchema = new Schema(
         thoughtText:{
             type: String, 
             required: 'Text is required', 
-            validate: [({ length }) => length >=128]
+            validate: [({ length }) => length <=128]
         }, 
         createdAt: {
             type: Date, 
@@ -19,19 +20,21 @@ const ThoughtSchema = new Schema(
             required: 'Username is required'
         }, 
         reactions: [
-            //idk how to make an array of nested documents created with reactionSchema?!?
+            [reactionSchema]
         ]
     }, 
     {
         toJSON: {
             virtuals: true
         }, 
-        //is it false?!
         id: false
     },
 );
 
 //retrieve the length of the thought's reaction???
+ThoughtSchema.virtual('reactionCount').get(function(){
+    return this.reactions.length;
+});
 
 //create User model with Userschema 
 const Thought = model('Thought', ThoughtSchema); 

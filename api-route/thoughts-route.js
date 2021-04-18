@@ -1,8 +1,9 @@
-const { db } = require('../Models/Thought'); 
+const { Thought, User } = require('../Models'); 
+const router = require('express').Router(); 
 
 //get all thoughts
-app.get('/all', (req, res) => {
-    db.Thought.find({})
+router.get('/all', (req, res) => {
+    Thought.find({})
     .then(dbThoughtdata => res.json(dbThoughtdata))
     .catch(err => {
         res.status(400).json(err)
@@ -10,11 +11,11 @@ app.get('/all', (req, res) => {
 }); 
 
 //get single thought by _id
-app.get('/:id', ({params}, res) => {
-    db.Thought.findOne({ _id: params.id })
+router.get('/:id', ({params}, res) => {
+    Thought.findOne({ _id: params.id })
     .then(dbThoughtdata => {
         if(!dbThoughtdata){
-            res.status(404).json({ message: "Nothing foudn with this id"});
+            res.status(404).json({ message: "Nothing found with this id"});
             return;
         }
         res.json(dbThoughtdata)
@@ -23,12 +24,13 @@ app.get('/:id', ({params}, res) => {
 }); 
 
 //post to create a new thought and push the created thought's _id to the associated user's thoughts array field
-app.post('/thought', ({params, body}, res) => {
-    db.Thought.findOneAndUpdate(
-        {_id: params.thoughtId}, 
-        {$push : {users : body}}, 
-        {new: true, runValidators: true}
-    )
+router.post('/', ({body}, res) => {
+    Thought.create(body)
+    .then(newThought => {
+        return User.findOneAndUpdate({_id: body.userid}, 
+        {$push : {thoughts : newThought._id}}, 
+        {new: true, runValidators: true})
+    })
     .then(dbThoughtdata => {
         if(!dbThoughtdata){
             res.status(400).json({message: "Nothing found with that id"}); 
@@ -41,11 +43,11 @@ app.post('/thought', ({params, body}, res) => {
 
 
 //put to update a thought by its _id 
-app.put('/update/:id', ({params, body}, res => {
-    db.Thought.findOneAndUpdate({_id: params.id}, body)
+router.put('/update/:id', (({params, body}, res) => {
+    Thought.findOneAndUpdate({_id: params.id}, {$set: body}, {runValidators: true, new: true})
     .then(dbThoughtdata => {
         if(!dbThoughtdata){
-            res.status(404).json({ message: "Nothing foudn with this id"});
+            res.status(404).json({ message: "Nothing found with this id"});
             return;
         }
         res.json(dbThoughtdata)
@@ -54,14 +56,52 @@ app.put('/update/:id', ({params, body}, res => {
 }));
 
 //delete to remove a thought by its _id 
-app.delete('/delete/:id', ({params}, res) => {
-    User.findOneAndDelete({ _id: params.id})
+router.delete('/delete/:id', ({params}, res) => {
+    Thought.findOneAndDelete({ _id: params.id})
     .then(dbThoughtdata => {
         if(!dbThoughtdata){
             res.status(404).json({message: "Nothing found with this id"}); 
             return; 
         }
-        res.json(dbUserdata); 
+        return User.findOneAndUpdate({thoughts: params.id}, {$pull: {thoughts: params.id}}, {new: true}); 
+    })
+    .then(userData => {
+        if(!userData){
+            return res.status(404).json()
+        }
     })
     .catch(err=> res.status(400).json(err));     
 })
+
+//post to create a reaction stored in a single thought's reactions array field
+router.post('/:thoughtId/reactions',({params}, res) => {
+    Thought.findOneAndUpdate({_id: params.id}, 
+        {$addToSet: {reaction: params.thoughtId}}, 
+        {new: true})
+        .then(dbThoughtdata => {
+            if(!dbThoughtdata){
+                res.status(404).json({message: "No thought found with this Id"}); 
+                return; 
+            }
+            res.json(dbThoughtdata); 
+        })
+        .catch(err=> res.status(400).json(err));
+    });
+
+//delete to pull and remove a reaction by the reaction's reactionId value 
+router.put('/:thoughtId/reactions', ({params}, res) => {
+    Thought.findOneAndUpdate({_id: params.id}, 
+        {$pull: {reaction: params.thoughtId}}, 
+        {new: true})
+        .then(dbThoughtdata => {
+            if(!dbThoughtdata){
+                res.status(404).json({message: "No thought found with this Id"}); 
+                return; 
+            }
+            res.json(dbThoughtdata); 
+        })
+        .catch(err=> res.status(400).json(err));
+    });
+
+
+module.exports = router; 

@@ -18,14 +18,14 @@ const Userschema = new Schema(
         thoughts: [
             {
                 type: Schema.Types.ObjectId, 
-                ref: 'Thought'
+                ref: 'Thought',
             }
         ],
         //array of _id values referencing the User model (self-reference)
         friends: [
             {
                 type: Schema.Types.ObjectId, 
-                ref: 'User'
+                ref: 'User',
             }
         ],
     },
@@ -33,7 +33,6 @@ const Userschema = new Schema(
         toJSON: {
             virtuals: true
         }, 
-        //is it false?!
         id: false
     },
 );
