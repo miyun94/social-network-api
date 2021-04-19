@@ -67,8 +67,8 @@ router.delete('/delete/:id', ({params}, res) => {
 })
 
 //post to add a new friend to a user's friend list
-router.put('/:userId/friends/:friendId', ({params}, res) => {
-    User.findOneAndUpdate({_id: params.id}, 
+router.post('/:userId/friends/:friendId', ({params}, res) => {
+    User.findOneAndUpdate({_id: params.userId}, 
         {$addToSet: {friends: params.friendId}}, 
         {new: true})
         .then(dbUserdata => {
@@ -82,8 +82,8 @@ router.put('/:userId/friends/:friendId', ({params}, res) => {
     });
 
 //delete to remove a friend from user's friend list 
-router.put('/:userId/friends/:friendId', ({params}, res) => {
-    User.findOneAndUpdate({_id: params.id}, 
+router.delete('/:userId/friends/:friendId', ({params}, res) => {
+    User.findOneAndUpdate({_id: params.userId}, 
         {$pull: {friends: params.friendId}}, 
         {new: true})
         .then(dbUserdata => {

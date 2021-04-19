@@ -74,25 +74,28 @@ router.delete('/delete/:id', ({params}, res) => {
 })
 
 //post to create a reaction stored in a single thought's reactions array field
-router.post('/:thoughtId/reactions',({params}, res) => {
-    Thought.findOneAndUpdate({_id: params.id}, 
-        {$addToSet: {reaction: params.thoughtId}}, 
-        {new: true})
+router.post('/:thoughtId/reactions',({params, body}, res) => {
+    Thought.findOneAndUpdate({_id: params.thoughtId}, 
+        {$addToSet: {reactions: body}},
+        {runValidators: true, 
+            new: true})
         .then(dbThoughtdata => {
             if(!dbThoughtdata){
                 res.status(404).json({message: "No thought found with this Id"}); 
                 return; 
             }
+            console.log(dbThoughtdata)
             res.json(dbThoughtdata); 
         })
         .catch(err=> res.status(400).json(err));
     });
 
 //delete to pull and remove a reaction by the reaction's reactionId value 
-router.put('/:thoughtId/reactions', ({params}, res) => {
-    Thought.findOneAndUpdate({_id: params.id}, 
-        {$pull: {reaction: params.thoughtId}}, 
-        {new: true})
+router.delete('/:thoughtId/reactions/:reactionId', ({params, body}, res) => {
+    Thought.findOneAndUpdate({_id: params.thoughtId}, 
+        {$pull: {reaction: {reactionId: body.reactionId}}}, 
+        {   runValidators: true,
+            new: true})
         .then(dbThoughtdata => {
             if(!dbThoughtdata){
                 res.status(404).json({message: "No thought found with this Id"}); 
