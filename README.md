@@ -15,13 +15,14 @@
   Git clone the Repo. Make sure to run npm install in the terminal.
 
 ## Usage
-  Through insomnia we can test each api route for the users and thoughts. 
+  Through insomnia we can test each api route for the users and thoughts. Here is a [link](https://youtu.be/8Spwkqa0JCc) to a video that shows the routes being tested. 
   
 ### Screenshot
-  The following image is a screenshot of the how the application should once finished:
+  The following gifs illustrates the different routes being tested and how they function: 
   <br/>
   <br/>
-  ![screenshot]()
+  ![screenshot](https://media.giphy.com/media/nRJP4B76i63jndlslP/giphy.gif)
+  ![screenshot](https://media.giphy.com/media/Ajp4WKKLz78VROPNa5/giphy.gif)
 
 ## Contributors 
   [miyun94](https://github.com/miyun94)
