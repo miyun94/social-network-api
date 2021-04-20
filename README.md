@@ -22,7 +22,10 @@
   <br/>
   <br/>
   ![screenshot](https://media.giphy.com/media/nRJP4B76i63jndlslP/giphy.gif)
+  ![screenshot](https://media.giphy.com/media/D321IcrpRNbhpbDify/giphy.gif)
   ![screenshot](https://media.giphy.com/media/Ajp4WKKLz78VROPNa5/giphy.gif)
+  ![screenshot](https://media.giphy.com/media/qwBaMj1LboKXG8TOyr/giphy.gif)
+  ![screenshot](https://media.giphy.com/media/uWZF0nTn0tq1tz3GKP/giphy.gif)
 
 ## Contributors 
   [miyun94](https://github.com/miyun94)
