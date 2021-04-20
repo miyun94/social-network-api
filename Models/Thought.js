@@ -1,6 +1,35 @@
-const { Schema, model } = require('mongoose'); 
+const { Schema, model, Types } = require('mongoose'); 
 const dateFormat = require('../utils/dateFormat'); 
-const reactionSchema = require('./Reaction')
+
+//create schema 
+const reactionSchema = new Schema (
+    {
+        reactionId: {
+            type: Schema.Types.ObjectId,
+            default: () => new Types.ObjectId()
+        }, 
+        reactionBody: {
+            type: String, 
+            require: 'This section is required!', 
+            maxlength: 280
+        }, 
+        username: {
+            type: String, 
+            require: 'Username required'
+        },
+        createdAt:{
+            type: Date, 
+            default: Date.now, 
+            get: createdAtVal => dateFormat(createdAtVal)
+        }
+    }, 
+    {
+        toJSON: {
+            getters: true
+        }, 
+        id: false
+    },
+); 
 
 //create scehma 
 const ThoughtSchema = new Schema(
@@ -19,13 +48,12 @@ const ThoughtSchema = new Schema(
             type: String, 
             required: 'Username is required'
         }, 
-        reactions: [
-            [reactionSchema]
-        ]
+        reaction: [reactionSchema]
     }, 
     {
         toJSON: {
-            virtuals: true
+            virtuals: true, 
+            getters: true
         }, 
         id: false
     },
@@ -33,7 +61,7 @@ const ThoughtSchema = new Schema(
 
 //retrieve the length of the thought's reaction???
 ThoughtSchema.virtual('reactionCount').get(function(){
-    return this.reactions.length;
+    return this.reaction.length;
 });
 
 //create User model with Userschema 
